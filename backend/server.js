@@ -15,8 +15,11 @@ const url     = require('url');
 const { WebSocketServer } = require('ws');
 
 const db = require('./db');
+const { detectHostIp } = require('./ip');
 
 const PORT = parseInt(process.env.PORT, 10) || 3000;
+const HOST_IP = detectHostIp();
+const BASE_URL = process.env.BASE_URL || `http://${HOST_IP}:${PORT}`;
 
 const app = express();
 app.use(cors());
@@ -95,7 +98,7 @@ wss.on('connection', (ws, req) => {
 
 // Health
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, deviceOnline: devices.size > 0 });
+  res.json({ ok: true, deviceOnline: devices.size > 0, baseUrl: BASE_URL });
 });
 
 // ESP32 reports motion
@@ -117,6 +120,7 @@ app.get('/api/status', (_req, res) => {
     ...db.getState(),
     deviceOnline: devices.size > 0,
     stats: db.getStats(),
+    baseUrl: BASE_URL,
   });
 });
 
@@ -198,6 +202,7 @@ app.get('*', (req, res) => {
 // Start
 // =====================================================================
 server.listen(PORT, () => {
-  console.log(`[HTTP] http://localhost:${PORT}`);
-  console.log(`[WS]   ws://localhost:${PORT}/ws  (?role=device | ?role=dashboard)`);
+  console.log(`[HTTP] http://0.0.0.0:${PORT}`);
+  console.log(`[URL]  ${BASE_URL}`);
+  console.log(`[WS]   ${BASE_URL.replace('http://', 'ws://')}/ws  (?role=device | ?role=dashboard)`);
 });

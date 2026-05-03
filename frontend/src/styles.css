@@ -87,6 +87,11 @@ body {
   color: var(--text-dim);
 }
 
+.baseurl {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
 .header-status {
   display: flex;
   gap: 8px;

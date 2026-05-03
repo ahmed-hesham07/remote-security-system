@@ -20,6 +20,7 @@ export default function App() {
   const [activeAlert, setActiveAlert]   = useState(null);
   const [soundOn, setSoundOn]           = useState(true);
   const [error, setError]               = useState(null);
+  const [baseUrl, setBaseUrl]           = useState('');
 
   const soundRef = useRef(soundOn);
   soundRef.current = soundOn;
@@ -45,6 +46,7 @@ export default function App() {
         });
         setStats(s.stats || DEFAULT_STATS);
         setDeviceOnline(!!s.deviceOnline);
+        setBaseUrl(s.baseUrl || '');
         setEvents(evs);
         const firstUnacked = evs.find((e) => !e.acknowledged);
         if (firstUnacked) setActiveAlert(firstUnacked);
@@ -119,6 +121,7 @@ export default function App() {
         deviceOnline={deviceOnline}
         soundOn={soundOn}
         onToggleSound={() => setSoundOn((s) => !s)}
+        baseUrl={baseUrl}
       />
 
       {error && <div className="banner-error">{error}</div>}

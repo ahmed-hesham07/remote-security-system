@@ -1,11 +1,13 @@
-export default function Header({ wsConnected, deviceOnline, soundOn, onToggleSound }) {
+export default function Header({ wsConnected, deviceOnline, soundOn, onToggleSound, baseUrl }) {
   return (
     <header className="header">
       <div className="brand">
         <span className="logo" aria-hidden>SS</span>
         <div>
           <h1>Remote Security System</h1>
-          <p className="tagline">Operator console</p>
+          <p className="tagline">
+            Operator console{baseUrl ? <span className="baseurl"> · {baseUrl}</span> : null}
+          </p>
         </div>
       </div>
 

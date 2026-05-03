@@ -119,6 +119,40 @@ This repo is ready to deploy as **one Render web service**:
 6. Open Serial Monitor at 115200 to watch boot logs.
 7. If you run local hosting, make sure the laptop firewall allows inbound TCP on port 3000.
 
+## Docker (run on your laptop IP)
+
+This is the easiest “LAN demo” setup: your laptop runs Docker, and your ESP32/phone connect to the laptop’s **WiFi IP**.
+
+### Start
+
+```powershell
+docker compose up --build
+```
+
+Then open the dashboard on any device on the same WiFi:
+
+- `http://<YOUR_LAPTOP_WIFI_IP>:3000`
+
+### Auto-detected URL
+
+On startup, the backend tries to detect your laptop’s LAN IPv4 and exposes it as:
+- `baseUrl` in `/api/status`
+- displayed in the dashboard header
+
+### If Docker auto-detect is wrong (common on Windows + VPN)
+
+Set `HOST_IP` in `docker-compose.yml` to your WiFi IP (example `192.168.1.23`), then restart:
+
+```powershell
+docker compose up --build
+```
+
+### ESP32 settings for laptop IP
+
+In `firmware/esp32_security.ino` for local LAN:
+- `SERVER_HOST` = `<YOUR_LAPTOP_WIFI_IP>`
+- `USE_TLS` = `false`
+
 ## API
 
 See [`docs/API.md`](docs/API.md) for the full reference. Key endpoints:
