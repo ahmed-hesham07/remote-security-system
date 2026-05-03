@@ -17,7 +17,7 @@ RUN npm ci --prefix backend && npm ci --prefix frontend
 COPY frontend ./frontend
 RUN npm run build --prefix frontend
 
-# Copy backend source
+# Copy backend source (node_modules excluded by .dockerignore)
 COPY backend ./backend
 
 FROM node:22-bookworm-slim AS runtime

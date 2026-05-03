@@ -33,13 +33,13 @@
 // =====================================================================
 static const char*    WIFI_SSID    = "YOUR_WIFI_SSID";
 static const char*    WIFI_PASS    = "YOUR_WIFI_PASSWORD";
-// For Render hosting, set this to: "your-service-name.onrender.com"
-// For local hosting, set to your laptop LAN IP (e.g. "192.168.1.100")
-static const char*    SERVER_HOST  = "your-service-name.onrender.com";
+// Local hosting (Docker / Node on your laptop): set this to your laptop WiFi IP (e.g. "192.168.1.50")
+// Render hosting: set this to "<your-service>.onrender.com"
+static const char*    SERVER_HOST  = "192.168.0.58";
 
-// Render is TLS-only => use HTTPS/WSS on port 443.
-// Local dev (http/ws) can be used by setting USE_TLS=false and SERVER_PORT=3000.
-static const bool     USE_TLS      = true;
+// Local laptop IP uses HTTP/WS (recommended for LAN demos)
+// Render is TLS-only => set USE_TLS=true (HTTPS/WSS) and the sketch will use port 443.
+static const bool     USE_TLS      = false;
 static const uint16_t SERVER_PORT  = USE_TLS ? 443 : 3000;
 static const char*    MOTION_PATH  = "/api/motion";
 static const char*    WS_PATH      = "/ws?role=device";

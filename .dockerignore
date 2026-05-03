@@ -1,0 +1,8 @@
+**/node_modules
+**/.vite
+**/dist
+**/*.db
+**/*.db-*
+.git
+.cursor
+demo

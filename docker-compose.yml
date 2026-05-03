@@ -8,6 +8,8 @@ services:
       # Optional override if auto-detect picks wrong IP (common on Docker Desktop / VPN)
       # Set to your laptop WiFi IP, e.g. 192.168.1.23
       # HOST_IP: "192.168.1.23"
+      # For this laptop right now (from ipconfig): 192.168.0.58
+      HOST_IP: "192.168.0.58"
       PORT: 3000
       DB_PATH: /data/security.db
     volumes:
