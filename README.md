@@ -77,6 +77,28 @@ Open <http://localhost:5173>. You should see the device come online,
 motion events appearing every ~15 seconds, the red banner flashing,
 and the lock/unlock/silence buttons working.
 
+## Hosting on Render (website + API)
+
+This repo is ready to deploy as **one Render web service**:
+- The backend serves the React build (`frontend/dist`)
+- WebSockets are hosted at the same URL (`/ws`)
+- SQLite is stored on a small persistent disk
+
+### Steps
+
+1. Push this project to a GitHub repo.
+2. In Render, click **New +** → **Blueprint** → pick your repo.
+3. Render will detect `render.yaml` and create the service automatically.
+4. Wait for the deploy to finish, then open your site:
+   - Dashboard: `https://<your-service>.onrender.com`
+   - API: `https://<your-service>.onrender.com/api/status`
+
+### Important notes
+
+- **Cold start**: on the free plan, the first request after idling can take time.
+- **WebSocket**: works automatically at `wss://<your-service>.onrender.com/ws`.
+- **DB persistence**: motion events persist because Render mounts a disk at `/var/data`.
+
 ## Running with the real ESP32
 
 1. Wire the breadboard per [`docs/WIRING.md`](docs/WIRING.md).
@@ -87,11 +109,15 @@ and the lock/unlock/silence buttons working.
 3. Open `firmware/esp32_security.ino` in the Arduino IDE.
 4. At the top of the file, set:
    - `WIFI_SSID`, `WIFI_PASS` — your WiFi
-   - `SERVER_HOST` — your laptop's LAN IP (run `ipconfig` in PowerShell)
-   - `SERVER_PORT` — `3000`
+   - For **Render**:
+     - `SERVER_HOST` = `your-service-name.onrender.com`
+     - `USE_TLS` = `true`
+   - For **local** hosting:
+     - `SERVER_HOST` = your laptop LAN IP (run `ipconfig` in PowerShell)
+     - `USE_TLS` = `false`
 5. Select board: **ESP32 Dev Module** and flash.
 6. Open Serial Monitor at 115200 to watch boot logs.
-7. Make sure the laptop firewall allows inbound TCP on port 3000.
+7. If you run local hosting, make sure the laptop firewall allows inbound TCP on port 3000.
 
 ## API
 

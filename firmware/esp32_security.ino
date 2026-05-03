@@ -26,14 +26,21 @@
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 #include <ESP32Servo.h>
+#include <WiFiClientSecure.h>
 
 // =====================================================================
-// CONFIG  — edit these for your network and laptop IP
+// CONFIG  — edit these for your WiFi and server
 // =====================================================================
 static const char*    WIFI_SSID    = "YOUR_WIFI_SSID";
 static const char*    WIFI_PASS    = "YOUR_WIFI_PASSWORD";
-static const char*    SERVER_HOST  = "192.168.1.100";   // your laptop's LAN IP
-static const uint16_t SERVER_PORT  = 3000;
+// For Render hosting, set this to: "your-service-name.onrender.com"
+// For local hosting, set to your laptop LAN IP (e.g. "192.168.1.100")
+static const char*    SERVER_HOST  = "your-service-name.onrender.com";
+
+// Render is TLS-only => use HTTPS/WSS on port 443.
+// Local dev (http/ws) can be used by setting USE_TLS=false and SERVER_PORT=3000.
+static const bool     USE_TLS      = true;
+static const uint16_t SERVER_PORT  = USE_TLS ? 443 : 3000;
 static const char*    MOTION_PATH  = "/api/motion";
 static const char*    WS_PATH      = "/ws?role=device";
 
@@ -108,9 +115,20 @@ void connectWiFi() {
 void postMotionEvent() {
   if (WiFi.status() != WL_CONNECTED) return;
 
-  String url = String("http://") + SERVER_HOST + ":" + SERVER_PORT + MOTION_PATH;
+  String url = String(USE_TLS ? "https://" : "http://") + SERVER_HOST;
+  if (!USE_TLS) url += ":" + String(SERVER_PORT);
+  url += MOTION_PATH;
+
   HTTPClient http;
-  http.begin(url);
+  if (USE_TLS) {
+    // NOTE: For demos we accept the server certificate without validation.
+    // This avoids dealing with root CA bundles on the ESP32.
+    WiFiClientSecure client;
+    client.setInsecure();
+    http.begin(client, url);
+  } else {
+    http.begin(url);
+  }
   http.addHeader("Content-Type", "application/json");
   http.setTimeout(3000);
 
@@ -183,7 +201,13 @@ void setup() {
   bootMs = millis();
   connectWiFi();
 
-  webSocket.begin(SERVER_HOST, SERVER_PORT, WS_PATH);
+  if (USE_TLS) {
+    webSocket.beginSSL(SERVER_HOST, SERVER_PORT, WS_PATH);
+    // Accept cert without validation (demo-friendly).
+    webSocket.setInsecure();
+  } else {
+    webSocket.begin(SERVER_HOST, SERVER_PORT, WS_PATH);
+  }
   webSocket.onEvent(onWsEvent);
   webSocket.setReconnectInterval(3000);
   webSocket.enableHeartbeat(15000, 3000, 2);

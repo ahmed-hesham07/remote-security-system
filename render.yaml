@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: remote-security-system
+    env: node
+    plan: free
+    buildCommand: npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend
+    startCommand: node backend/server.js
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: DB_PATH
+        value: /var/data/security.db
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1

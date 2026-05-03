@@ -10,6 +10,7 @@
 const express = require('express');
 const http    = require('http');
 const cors    = require('cors');
+const path    = require('path');
 const url     = require('url');
 const { WebSocketServer } = require('ws');
 
@@ -20,6 +21,10 @@ const PORT = parseInt(process.env.PORT, 10) || 3000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// If deployed (e.g., Render), serve the built frontend from ../frontend/dist
+const distDir = path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(distDir));
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
@@ -179,6 +184,15 @@ app.get('/api/audit', (req, res) => {
 
 // 404 fallback for /api
 app.use('/api', (_req, res) => res.status(404).json({ ok: false, error: 'not found' }));
+
+// SPA fallback (must be after /api, and after express.static)
+app.get('*', (req, res) => {
+  // Let websocket path fail fast if someone hits it via HTTP
+  if (req.path === '/ws') return res.status(426).send('Upgrade Required');
+  res.sendFile(path.join(distDir, 'index.html'), (err) => {
+    if (err) res.status(404).send('Frontend not built. Run the frontend build step.');
+  });
+});
 
 // =====================================================================
 // Start
