@@ -31,8 +31,8 @@
 // =====================================================================
 // CONFIG  — edit these for your WiFi and server
 // =====================================================================
-static const char*    WIFI_SSID    = "YOUR_WIFI_SSID";
-static const char*    WIFI_PASS    = "YOUR_WIFI_PASSWORD";
+static const char*    WIFI_SSID    = "iModem";
+static const char*    WIFI_PASS    = "NightFalcon#5821";
 // Local hosting (Docker / Node on your laptop): set this to your laptop WiFi IP (e.g. "192.168.1.50")
 // Render hosting: set this to "<your-service>.onrender.com"
 static const char*    SERVER_HOST  = "192.168.0.58";
