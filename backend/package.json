@@ -1,0 +1,17 @@
+{
+  "name": "remote-security-backend",
+  "version": "1.0.0",
+  "description": "Node.js backend for the Remote Security System (ESP32 IoT demo)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "simulate": "node simulator.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "ws": "^8.18.0"
+  }
+}
